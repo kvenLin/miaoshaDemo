@@ -1,9 +1,7 @@
 package com.imooc.miaosha.service;
 
-import com.imooc.miaosha.domain.Goods;
 import com.imooc.miaosha.domain.MiaoShaUser;
 import com.imooc.miaosha.domain.OrderInfo;
-import com.imooc.miaosha.domain.User;
 import com.imooc.miaosha.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

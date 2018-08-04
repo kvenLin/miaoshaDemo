@@ -15,6 +15,7 @@ public enum CodeMsg {
     BIND_ERROR(502,"参数检验错误: %s"),
     STOCK_NOT_ENOUGH(503,"库存不足,商品已经秒杀完毕"),
     REPEAT_MIAOSHA(504,"已经秒杀过不能重复秒杀"),
+    ORDER_NOT_EXIST(505,"订单不存在"),
 
     ;
     private Integer code;
