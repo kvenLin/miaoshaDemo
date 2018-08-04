@@ -48,10 +48,12 @@ public class OrderService {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
-        long orderId = orderDao.insert(orderInfo);
+        //注:插入数据后返回的ID是直接赋值给对象,而不是通过方法返回ID值
+        orderDao.insert(orderInfo);
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setGoodsId(goods.getId());
-        miaoshaOrder.setOrderId(orderId);
+        //从赋予ID值后的对象中获取ID值
+        miaoshaOrder.setOrderId(orderInfo.getId());
         miaoshaOrder.setUserId(user.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
         //缓存订单
