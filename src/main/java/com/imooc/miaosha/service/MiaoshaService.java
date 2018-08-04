@@ -1,6 +1,7 @@
 package com.imooc.miaosha.service;
 
 import com.imooc.miaosha.domain.Goods;
+import com.imooc.miaosha.domain.MiaoShaUser;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.domain.User;
 import com.imooc.miaosha.vo.GoodsVo;
@@ -17,7 +18,7 @@ public class MiaoshaService {
     private OrderService orderService;
 
     @Transactional
-    public OrderInfo miaosha(User user, GoodsVo goods){
+    public OrderInfo miaosha(MiaoShaUser user, GoodsVo goods){
         //可以进行秒杀
         //1.减库存,2.下订单,3.写入秒杀,事务
         goodsService.reduceStock(goods);

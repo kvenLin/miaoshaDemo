@@ -1,6 +1,7 @@
 package com.imooc.miaosha.service;
 
 import com.imooc.miaosha.dao.OrderDao;
+import com.imooc.miaosha.domain.MiaoShaUser;
 import com.imooc.miaosha.domain.MiaoshaOrder;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.domain.User;
@@ -21,7 +22,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderInfo createOrder(User user, GoodsVo goods) {
+    public OrderInfo createOrder(MiaoShaUser user, GoodsVo goods) {
         //插入order_info,miaosha_order两张表
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreateDate(new Date());
@@ -32,12 +33,12 @@ public class OrderService {
         orderInfo.setGoodsPrice(goods.getMiaoshaPrice());
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
-        orderInfo.setUserId(Long.valueOf(user.getId()));
+        orderInfo.setUserId(user.getId());
         long orderId = orderDao.insert(orderInfo);
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setGoodsId(goods.getId());
         miaoshaOrder.setOrderId(orderId);
-        miaoshaOrder.setUserId(Long.valueOf(user.getId()));
+        miaoshaOrder.setUserId(user.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
         return orderInfo;
     }

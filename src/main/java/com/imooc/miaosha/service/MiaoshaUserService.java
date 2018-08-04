@@ -16,7 +16,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
-public class MiaoShaUserService {
+public class MiaoshaUserService {
 
     private static final String COOKIE_NAME_TOKEN="token";
     @Autowired
@@ -25,7 +25,17 @@ public class MiaoShaUserService {
     private RedisService redisService;
 
     public MiaoShaUser getById(long id){
-        return miaoShaUserDao.getById(id);
+        //取缓存
+        MiaoShaUser user = redisService.get(MiaoshaUserKey.getById,""+id,MiaoShaUser.class);
+        if (user!=null){
+            return user;
+        }
+        //取数据库
+        user = miaoShaUserDao.getById(id);
+        if (user!=null){
+            redisService.set(MiaoshaUserKey.getById,""+id,user);
+        }
+        return user;
     }
 
     public boolean login(HttpServletResponse response,LoginVo loginVo) {
@@ -55,6 +65,25 @@ public class MiaoShaUserService {
         cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds());
         cookie.setPath("/");
         response.addCookie(cookie);
+        return true;
+    }
+
+    public boolean updatePassword(String token,long id,String passwordNew){
+        //取user对象
+        MiaoShaUser user = getById(id);
+        if (user==null){
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+        //更新数据库
+        MiaoShaUser updateUser = new MiaoShaUser();
+        updateUser.setId(id);
+        updateUser.setPassword(MD5Util.inputPassToDbPass(passwordNew,user.getSalt()));
+        miaoShaUserDao.update(updateUser);
+        //更新成功后处理缓存
+        redisService.delete(MiaoshaUserKey.getById,""+id);
+        //更新token
+        user.setPassword(updateUser.getPassword());
+        redisService.set(MiaoshaUserKey.token,token,user);
         return true;
     }
 }

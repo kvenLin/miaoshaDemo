@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
             , HttpServletResponse response
             ,Exception e){
         //修复bug时可以进行打印exception
-//        e.printStackTrace();
+        e.printStackTrace();
         //处理自定义的业务异常
         if (e instanceof GlobalException){
             GlobalException globalException = (GlobalException) e;

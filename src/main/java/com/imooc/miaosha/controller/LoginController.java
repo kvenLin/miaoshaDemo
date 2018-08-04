@@ -1,7 +1,7 @@
 package com.imooc.miaosha.controller;
 
 import com.imooc.miaosha.result.Result;
-import com.imooc.miaosha.service.MiaoShaUserService;
+import com.imooc.miaosha.service.MiaoshaUserService;
 import com.imooc.miaosha.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import javax.validation.Valid;
 public class LoginController {
 
     @Autowired
-    private MiaoShaUserService userService;
+    private MiaoshaUserService userService;
 
     @RequestMapping("/do_login")
     public Result<Boolean> doLogin(@Valid LoginVo loginVo, HttpServletResponse response){

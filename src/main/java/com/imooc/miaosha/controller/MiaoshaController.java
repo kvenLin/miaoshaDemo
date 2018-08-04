@@ -1,14 +1,12 @@
 package com.imooc.miaosha.controller;
 
+import com.imooc.miaosha.domain.MiaoShaUser;
 import com.imooc.miaosha.domain.MiaoshaOrder;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.domain.User;
 import com.imooc.miaosha.result.CodeMsg;
 import com.imooc.miaosha.result.Result;
-import com.imooc.miaosha.service.GoodsService;
-import com.imooc.miaosha.service.MiaoshaService;
-import com.imooc.miaosha.service.OrderService;
-import com.imooc.miaosha.service.UserService;
+import com.imooc.miaosha.service.*;
 import com.imooc.miaosha.vo.GoodsVo;
 import com.imooc.miaosha.vo.MiaoshaOrderGoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +24,13 @@ public class MiaoshaController {
     @Autowired
     private MiaoshaService miaoshaService;
     @Autowired
-    private UserService userService;
+    private MiaoshaUserService userService;
 
     //暂时只关注秒杀逻辑,所以直接通过接口传入userId和goodsId
     //TODO,后续使用security完善权限控制
     @RequestMapping("/do_miaosha")
-    public Object doMiaosha(Integer userId,long goodsId){
-        User user = userService.getById(userId);
+    public Object doMiaosha(Long userId,long goodsId){
+        MiaoShaUser user = userService.getById(userId);
         //判断商品库存
         GoodsVo goodsVo = goodsService.getGoodsVoByGoodsId(goodsId);
         if (goodsVo.getStockCount()<=0){

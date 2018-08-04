@@ -6,7 +6,7 @@
     <groupId>com.imooc</groupId>
     <artifactId>miaosha_idea</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>miaosha_idea</name>
     <description>Demo project for Spring Boot</description>
@@ -25,6 +25,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope><!--provided表示运行时不需要,但编译时需要-->
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -83,6 +88,7 @@
     </dependencies>
 
     <build>
+        <!--<finalName>${project.artifactId}</finalName>-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

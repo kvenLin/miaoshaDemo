@@ -1,10 +1,13 @@
 package com.imooc.miaosha.redis;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+
+import java.util.List;
 
 @Service
 public class RedisService {
@@ -64,6 +67,20 @@ public class RedisService {
         }
     }
 
+    //删除
+    public <T> boolean delete(KeyPrefix prefix,String key){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            //生成真正的key
+            String realKey = prefix.getPrefix() + key;
+            long ret = jedis.del(realKey);
+            return ret > 0;
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
     //增加
     public <T> Long incr(KeyPrefix prefix,String key){
         Jedis jedis = null;
@@ -102,6 +119,8 @@ public class RedisService {
             return (String) value;
         }else if (clazz==long.class||clazz==Long.class){
             return ""+value;
+        }else if (clazz==List.class){
+            return ""+JSONArray.toJSONString(value);
         }else {
             return JSON.toJSONString(value);
         }
@@ -118,7 +137,9 @@ public class RedisService {
             return (T) str;
         }else if (clazz==long.class||clazz==Long.class) {
             return (T) Long.valueOf(str);
-        }else {
+        }else if (clazz==List.class){
+            return JSONArray.parseObject(str,clazz);
+        } else {
             return JSON.toJavaObject(JSON.parseObject(str),clazz);
         }
     }
