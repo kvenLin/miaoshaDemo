@@ -13,6 +13,8 @@ public enum CodeMsg {
     MOBILE_NOT_EXIST(405,"手机号不存在"),
     PASSWORD_ERROR(501,"密码错误"),
     BIND_ERROR(502,"参数检验错误: %s"),
+    STOCK_NOT_ENOUGH(503,"库存不足,商品已经秒杀完毕"),
+    REPEAT_MIAOSHA(504,"已经秒杀过不能重复秒杀"),
 
     ;
     private Integer code;
