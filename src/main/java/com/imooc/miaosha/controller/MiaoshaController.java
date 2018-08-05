@@ -5,10 +5,7 @@ import com.imooc.miaosha.domain.MiaoshaOrder;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.rabiitmq.MQSender;
 import com.imooc.miaosha.rabiitmq.MiaoshaMessage;
-import com.imooc.miaosha.redis.GoodsKey;
-import com.imooc.miaosha.redis.MiaoshaKey;
-import com.imooc.miaosha.redis.OrderKey;
-import com.imooc.miaosha.redis.RedisService;
+import com.imooc.miaosha.redis.*;
 import com.imooc.miaosha.result.CodeMsg;
 import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.service.GoodsService;
@@ -26,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -127,8 +125,19 @@ public class MiaoshaController implements InitializingBean {
     //暂时只关注秒杀逻辑,所以直接通过接口传入userId和goodsId
     //TODO,后续使用security完善权限 控制
     @RequestMapping("/path")//得到秒杀的接口
-    public Object getMiaoshaPath(int verifyCode,long userId,long goodsId){
+    public Object getMiaoshaPath(int verifyCode, long userId, long goodsId, HttpServletRequest request){
 
+        //限流防刷
+        String uri = request.getRequestURI();
+        String key = uri+"_"+userId;
+        Integer count = redisService.get(AccessKey.access, key, Integer.class);
+        if (count==null){
+            redisService.set(AccessKey.access,key,1);
+        }else if (count<5){
+            redisService.incr(AccessKey.access,key);
+        }else {
+            return Result.error(CodeMsg.ACCESS_LIMIT);
+        }
         boolean check = miaoshaService.checkVerifyCode(verifyCode,userId,goodsId);
         if (!check){
             return Result.error(CodeMsg.VERIFY_CODE_ERROR);

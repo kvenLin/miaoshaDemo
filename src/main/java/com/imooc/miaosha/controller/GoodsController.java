@@ -1,5 +1,6 @@
 package com.imooc.miaosha.controller;
 
+import com.imooc.miaosha.access.AccessLimit;
 import com.imooc.miaosha.redis.GoodsKey;
 import com.imooc.miaosha.redis.RedisService;
 import com.imooc.miaosha.result.Result;
@@ -23,6 +24,7 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
 
+    @AccessLimit(seconds = 5,maxCount = 5,needLogin = true)
     @RequestMapping("/to_list")
     public Object toList(){
         //取缓存
