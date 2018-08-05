@@ -17,7 +17,8 @@ public enum CodeMsg {
     REPEAT_MIAOSHA(504,"已经秒杀过不能重复秒杀"),
     ORDER_NOT_EXIST(505,"订单不存在"),
     REQUEST_ILLEGAL(506,"url错误,请求非法"),
-
+    MIAOSHA_FAIL(507,"秒杀失败"),
+    VERIFY_CODE_ERROR(508,"验证码错误"),
     ;
     private Integer code;
     private String msg;

@@ -24,6 +24,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,9 +127,30 @@ public class MiaoshaController implements InitializingBean {
     //暂时只关注秒杀逻辑,所以直接通过接口传入userId和goodsId
     //TODO,后续使用security完善权限 控制
     @RequestMapping("/path")//得到秒杀的接口
-    public Object getMiaoshaPath(long userId,long goodsId){
+    public Object getMiaoshaPath(int verifyCode,long userId,long goodsId){
+
+        boolean check = miaoshaService.checkVerifyCode(verifyCode,userId,goodsId);
+        if (!check){
+            return Result.error(CodeMsg.VERIFY_CODE_ERROR);
+        }
+
         String path = miaoshaService.createPath(userId,goodsId);
         return Result.success(path);
+    }
+
+    @RequestMapping("/verifyCode")
+    public Object getMiaoshaVerifyCode(long userId, long goodsId, HttpServletResponse response){
+        BufferedImage image = miaoshaService.createMiaoshaVerifyCode(userId,goodsId);
+        try {
+            ServletOutputStream out = response.getOutputStream();
+            ImageIO.write(image,"JPEG",out);
+            out.flush();
+            out.close();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Result.error(CodeMsg.MIAOSHA_FAIL);
+        }
     }
 
     /**
