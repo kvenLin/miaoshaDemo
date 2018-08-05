@@ -5,6 +5,8 @@ import com.imooc.miaosha.domain.MiaoshaOrder;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.redis.MiaoshaKey;
 import com.imooc.miaosha.redis.RedisService;
+import com.imooc.miaosha.util.MD5Util;
+import com.imooc.miaosha.util.UUIDUtil;
 import com.imooc.miaosha.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,7 @@ public class MiaoshaService {
         MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(userId,goodsId);
         //下单成功
         if (order!=null){
-            return order.getId();
+            return order.getOrderId();
         }
         boolean isOver = getGoodsOver(goodsId);
         //卖完
@@ -54,5 +56,22 @@ public class MiaoshaService {
         }
         //排队中
         return 0;
+    }
+
+    public boolean checkPath(long userId,long goodsId,String path) {
+        String pathOld = redisService.get(MiaoshaKey.getMiaoshaPath, userId + "_" + goodsId, String.class);
+        if (path==null){
+            return false;
+        }
+        if (path.equals(pathOld)){
+            return true;
+        }
+        return false;
+    }
+
+    public String createPath(long userId, long goodsId) {
+        String path = MD5Util.md5(UUIDUtil.uuid()+"123456");
+        redisService.set(MiaoshaKey.getMiaoshaPath,userId+"_"+goodsId,path);
+        return path;
     }
 }

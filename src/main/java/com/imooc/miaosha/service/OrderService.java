@@ -7,6 +7,7 @@ import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.redis.OrderKey;
 import com.imooc.miaosha.redis.RedisService;
 import com.imooc.miaosha.vo.GoodsVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 
 @Service
+@Slf4j
 public class OrderService {
     @Autowired
     private OrderDao orderDao;
@@ -52,7 +54,7 @@ public class OrderService {
         orderDao.insert(orderInfo);
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setGoodsId(goods.getId());
-        //从赋予ID值后的对象中获取ID值
+        //TODO,从赋予ID值后的对象中获取ID值
         miaoshaOrder.setOrderId(orderInfo.getId());
         miaoshaOrder.setUserId(user.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);

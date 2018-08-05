@@ -32,6 +32,7 @@ public class MiaoshaUserService {
         }
         //取数据库
         user = miaoShaUserDao.getById(id);
+        //进行缓存
         if (user!=null){
             redisService.set(MiaoshaUserKey.getById,""+id,user);
         }

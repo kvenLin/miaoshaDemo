@@ -16,6 +16,7 @@ public enum CodeMsg {
     STOCK_NOT_ENOUGH(503,"库存不足,商品已经秒杀完毕"),
     REPEAT_MIAOSHA(504,"已经秒杀过不能重复秒杀"),
     ORDER_NOT_EXIST(505,"订单不存在"),
+    REQUEST_ILLEGAL(506,"url错误,请求非法"),
 
     ;
     private Integer code;

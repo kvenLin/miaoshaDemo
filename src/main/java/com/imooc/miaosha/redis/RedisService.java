@@ -16,6 +16,19 @@ public class RedisService {
     JedisPool jedisPool;
 
 
+
+    //清空缓存数据
+    public void flush(){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.flushAll();
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+
     //获取单个对象
     public <T> T get(KeyPrefix prefix,String key,Class<T> clazz){
         Jedis jedis = null;

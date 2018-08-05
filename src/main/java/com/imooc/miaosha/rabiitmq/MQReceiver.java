@@ -4,8 +4,6 @@ import com.imooc.miaosha.domain.MiaoShaUser;
 import com.imooc.miaosha.domain.MiaoshaOrder;
 import com.imooc.miaosha.domain.OrderInfo;
 import com.imooc.miaosha.redis.RedisService;
-import com.imooc.miaosha.result.CodeMsg;
-import com.imooc.miaosha.result.Result;
 import com.imooc.miaosha.service.GoodsService;
 import com.imooc.miaosha.service.MiaoshaService;
 import com.imooc.miaosha.service.OrderService;
@@ -59,20 +57,22 @@ public class MQReceiver {
         MiaoShaUser user = miaoshaMessage.getUser();
         long goodsId = miaoshaMessage.getGoodsId();
         GoodsVo goodsVo = goodsService.getGoodsVoByGoodsId(goodsId);
-        int stock = goodsVo.getGoodsStock();
+        int stock = goodsVo.getStockCount();
         if (stock<=0){
+            log.error("库存不足..goodsVo:{}",goodsVo);
             return;
         }
 
         //判断是否已经秒杀成功过
         MiaoshaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(),goodsId);
         if (order!=null){
+            log.error("已经秒杀过了..不能重复秒杀!");
             return;
         }
-
         //可以进行秒杀,生成秒杀订单
         //1.减库存,2.下订单,3.写入秒杀,事务
         OrderInfo orderInfo = miaoshaService.miaosha(user,goodsVo);
+        log.info("秒杀成功,订单信息:{}",orderInfo);
     }
 
 }
